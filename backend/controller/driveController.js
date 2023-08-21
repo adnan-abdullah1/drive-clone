@@ -41,10 +41,43 @@ exports.createFolder = expressAsyncHandler(
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
         let newDriveFolder = new driveModel({
+            parentFolderId: new mongoose.Types.ObjectId(parentFolderId),
             files: [],
             nestedFolders: []
         })
         const isFolderCreated = await newDriveFolder.save();
-        return res.json({ error: false, message: 'folder is created' });
+        if (!isFolderCreated) {
+            return res.status(400).json({ error: true, message: 'couldn\'t create folder' })
+        }
+        //push entry in parentFolder
+        const updatedParent = await driveModel.findByIdAndUpdate(parentFolderId, {
+            $push: {
+                nestedFolders: isFolderCreated._id
+            }
+        })
+        return res.json({ error: false, message: 'folder is created', data: { isFolderCreated } });
+    }
+)
+exports.deleteFolder = expressAsyncHandler(
+    async (req,res,next) => {
+        const {parentFolderId,folderId} = req.params;
+        if(!areMongoIdsValid([parentFolderId,folderId])){
+            return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
+        }
+        const updatedParent = await driveModel.findByIdAndUpdate(parentFolderId,{
+            $pull:{
+                nestedFolders : {
+                    "_id": new mongoose.Types.ObjectId(parentFolderId)
+                }
+            }
+        })
+        if(!updatedParent){
+            return res.status(400).json({ error: true, message: 'couldn\'t delete folder', data: {} });
+        }
+        const deletedFolder = await driveModel.findByIdAndDelete(folderId)
+        if(!deletedFolder){
+            return res.status(400).json({ error: true, message: 'couldn\'t delete Folder', data: {} });
+        }
+        return res.status(400).json({ error: true, message: 'deleted Folder', data: {} });
     }
 )

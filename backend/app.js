@@ -92,7 +92,9 @@ setTimeout(() => {
     app.use('/api/v1/drive', driveRouter);
     app.use('/api/v1/auth', authRouter);
 })
-
+app.get('/',(req,res,next)=>{
+    res.send('<h1>hi</h1>')
+})
 // const result = cloudinary.uploader.upload('./1.png')
 // result.then((any)=>console.log(any))
 

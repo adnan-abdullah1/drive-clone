@@ -79,6 +79,9 @@ let transporter = nodemailer.createTransport({
     service: 'gmail',
     host: "smtp.gmail.com",
     port: 587,
+    tls:{
+        rejectUnauthorized : false
+    },
     auth: {
         user: MAIL,
         pass: MAIL_PASSWORD
@@ -95,7 +98,7 @@ exports.SendMail = (to)=>{
     }
     transporter.sendMail(message, (err, info) => {
         if (err) {
-            console.log('*** unable to send mail***')
+            console.log('*** unable to send mail***',err)
         }
         else {
             console.log('*** Successfully sent mail***' )

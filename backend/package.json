@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "",
-    "dev": "nodemon ./app.js",
-    "start": "node ./app.js",
+
+    "start": "./node_modules/.bin/netlify-lambda serve src",
+    "build": "./node_modules/.bin/netlify-lambda build src",
+
     "production": "NODE_ENV=production"
   },
   "keywords": [

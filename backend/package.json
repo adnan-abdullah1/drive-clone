@@ -7,7 +7,6 @@
     "test": "",
     "dev": "nodemon ./app.js",
     "start": "node ./app.js",
-    
     "production": "NODE_ENV=production"
   },
   "keywords": [

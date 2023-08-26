@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "google drive clone",
   "main": "app.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "test": "",
     "dev": "nodemon ./app.js",

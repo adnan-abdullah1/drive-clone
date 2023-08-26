@@ -13,7 +13,7 @@ exports.register = expressAsyncHandler(
             //has password
             const salt = await bcrypt.genSalt(SALT_ROUNDS)
             const hashedPassword = await bcrypt.hash(password, salt)
-            const session = await mongoose.startSession()
+            // const session = await mongoose.startSession()
             //create model
             const newUser = new authModel({
                 password: hashedPassword,
@@ -45,7 +45,7 @@ exports.register = expressAsyncHandler(
 
         }
         catch (err) {
-            await session.abortTransaction();
+            // await session.abortTransaction();
             res.status(400).json({ message: err.message, data: {} })
         }
 

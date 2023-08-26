@@ -17,10 +17,10 @@ const { debug } = require('console');
 const compression = require('compression')
 let driveRouter;
 let authRouter;
-setTimeout(() => {
+// setTimeout(() => {
     driveRouter = require('@Route/driveRouter');
     authRouter = require('@Route/authRouter');
-})
+// })
 let { CLOUDINARY_URL, CLOUDINARY_SECRET, CLOUDINARY_DB, PORT, CLOUDINARY_APIKEY, MONGO_URL } = process.env
 const app = express();
 

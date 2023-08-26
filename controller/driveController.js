@@ -31,7 +31,7 @@ exports.uploadData = expressAsyncHandler(
             return res.status(400).json({ message: 'file uploaded successfully', data: newSavedFile })
         }
         else {
-            return res.status(400).json({ message: 'file couldn\t be uploaded', data: newSavedFile })
+            return res.status(400).json({ message: 'file couldn\t be uploaded', data: {} })
         }
     }
 )

@@ -40,6 +40,9 @@ exports.register = expressAsyncHandler(
             else {
                 throw new Error('failed to create drive space')
             }
+            session.commitTransaction();
+            session.endSession()
+
         }
         catch (err) {
             await session.abortTransaction();

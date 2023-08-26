@@ -87,10 +87,10 @@ cloudinary.config({
 
 
 
-app.use('/api/v1/drive', require('@Route/driveRouter'));
-app.use('/api/v1/auth', require('@Route/authRouter'));
+// app.use('/api/v1/drive', require('@Route/driveRouter'));
+// app.use('/api/v1/auth', require('@Route/authRouter'));
 app.get('/', (req, res, next) => {
-    res.send('hiii')
+    res.render('index')
 })
 // const result = cloudinary.uploader.upload('./1.png')
 // result.then((any)=>console.log(any))

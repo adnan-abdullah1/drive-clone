@@ -15,7 +15,7 @@ const fs = require('fs');
 const morgan = require('morgan');
 const { debug } = require('console');
 const compression = require('compression')
-
+const { indexHtml } = require('./views/indexEjs');
 
 let { CLOUDINARY_URL, CLOUDINARY_SECRET, CLOUDINARY_DB, PORT, CLOUDINARY_APIKEY, MONGO_URL } = process.env
 const app = express();
@@ -86,11 +86,12 @@ cloudinary.config({
 
 
 const driveRouter = require('./routes/driveRouter')
-const authRouter = require('./routes/authRouter')
+const authRouter = require('./routes/authRouter');
+
 app.use('/api/v1/drive',driveRouter );
 app.use('/api/v1/auth', authRouter);
 app.get('/', (req, res, next) => {
-    return res.send('hii there')
+    return res.send(indexHtml)
 })
 // const result = cloudinary.uploader.upload('./1.png')
 // result.then((any)=>console.log(any))

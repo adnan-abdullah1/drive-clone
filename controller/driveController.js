@@ -42,6 +42,11 @@ exports.createFolder = expressAsyncHandler(
         if (!areMongoIdsValid([parentFolderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
+        //check if parent folder is there
+        const parentFolderExist = await await driveModel.findById(parentFolderId)
+        if(!parentFolderExist){
+            return res.status(400).json({message:'Parent folder doesn\'t exist'});
+        }
         let newDriveFolder = new driveModel({
             parentFolderId: new mongoose.Types.ObjectId(parentFolderId),
             files: [],

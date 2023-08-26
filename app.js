@@ -15,12 +15,7 @@ const fs = require('fs');
 const morgan = require('morgan');
 const { debug } = require('console');
 const compression = require('compression')
-let driveRouter;
-let authRouter;
-// setTimeout(() => {
-    driveRouter = require('./routes/driveRouter');
-    authRouter = require('./routes/authRouter');
-// })
+
 let { CLOUDINARY_URL, CLOUDINARY_SECRET, CLOUDINARY_DB, PORT, CLOUDINARY_APIKEY, MONGO_URL } = process.env
 const app = express();
 
@@ -29,14 +24,16 @@ app.use(helmet())
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'))
-app.use(compression({ filter: (req, res) => {
-    if (req.headers['x-no-compression']) {
-      // don't compress responses with this request header
-      return false
+app.use(compression({
+    filter: (req, res) => {
+        if (req.headers['x-no-compression']) {
+            // don't compress responses with this request header
+            return false
+        }
+        // fallback to standard filter function
+        return compression.filter(req, res)
     }
-    // fallback to standard filter function
-    return compression.filter(req, res)
-  } }))
+}))
 
 //mongoose connection 
 const mnogooseConnection = mongoose.connect(`${MONGO_URL}`);
@@ -47,7 +44,7 @@ mnogooseConnection.
 mongoose.connection.on('error', err => {
     console.log(err);
 });
-// app.get('env') == 'development' ? mongoose.set('debug',true) : mongoose.set(debug,false)
+app.get('env') == 'development' ? mongoose.set('debug', true) : mongoose.set(debug, false)
 mongoose.connection.on('connected', () => {
     let db = mongoose.connections[0].db;
     bucket = new mongoose.mongo.GridFSBucket(db, {
@@ -77,8 +74,7 @@ const storage = new GridFsStorage({
 });
 
 
-const upload = multer({ storage, dest: '/uploads' })
-
+exports.upload = multer({ storage, dest: '/uploads' })
 
 //cloudinary settings 
 cloudinary.config({
@@ -88,12 +84,11 @@ cloudinary.config({
 });
 
 
-setTimeout(() => {
-    app.use('/api/v1/drive', driveRouter);
-    app.use('/api/v1/auth', authRouter);
-})
-app.get('/',(req,res,next)=>{
-    res.send('<h1 style="color:red">hello world</h1>')
+
+app.use('/api/v1/drive', require('@Route/driveRouter'));
+app.use('/api/v1/auth', require('@Route/authRouter'));
+app.get('/', (req, res, next) => {
+    res.send('<h1>hello wolrd!!! this is drive clone</h1>')
 })
 // const result = cloudinary.uploader.upload('./1.png')
 // result.then((any)=>console.log(any))
@@ -110,4 +105,5 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = upload;
+
+

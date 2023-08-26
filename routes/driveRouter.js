@@ -1,8 +1,7 @@
 const router = require('express').Router({ mergeParams: true });;
 
-let upload;
+let {upload} = require('../app')
 
-upload = require('../app')
 
 
 const driveController = require('../controller/driveController')
@@ -14,7 +13,7 @@ router.route('/folder/:parentFolderId/:forlderId')
 router.route('/:folderId/:userId')
         .get()
         .post(
-                // upload.single('file'),
+                upload.single('file'),
                 driveController.uploadData)
 router.route('/:userId/:resourceId')
         .delete((req, res, next) => { next(); }, () => { res.send("hiiii@@@@@@@@@") })

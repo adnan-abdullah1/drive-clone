@@ -10,7 +10,6 @@ exports.uploadData = expressAsyncHandler(
     async (req, res, next) => {
         const { userId, folderId } = req.params;
         const contentLengthInBytes = req.headers['content-length'] / 1024  //set size in KB
-
         if (!areMongoIdsValid([folderId, req.file?.id, userId])) {
             return res.status(400).json({ error: true, message: 'object Ids are not valid', data: {} });
         }

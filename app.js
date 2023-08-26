@@ -35,8 +35,8 @@ app.use(compression({
         return compression.filter(req, res)
     }
 }))
-app.set('view engine', 'ejs'); // Set the default view engine
-app.set('views', 'views');
+// app.set('view engine', 'ejs'); // Set the default view engine
+// app.set('views', 'views');
 //mongoose connection 
 const mnogooseConnection = mongoose.connect(`${MONGO_URL}`);
 mnogooseConnection.

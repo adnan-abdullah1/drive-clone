@@ -90,6 +90,7 @@ cloudinary.config({
 // app.use('/api/v1/drive', require('@Route/driveRouter'));
 // app.use('/api/v1/auth', require('@Route/authRouter'));
 app.get('/', (req, res, next) => {
+    return res.send('hii there')
     res.send(`<!DOCTYPE html>
     <html lang="en">
     <head>

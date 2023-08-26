@@ -96,7 +96,9 @@ app.get('/', (req, res, next) => {
 // const result = cloudinary.uploader.upload('./1.png')
 // result.then((any)=>console.log(any))
 
-
+app.use((err,req,res,nex)=>{
+    res.send(err.message)
+})
 
 // Start the server
 if (app.get('env') === 'development') {

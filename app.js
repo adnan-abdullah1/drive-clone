@@ -46,7 +46,7 @@ mnogooseConnection.
 mongoose.connection.on('error', err => {
     console.log(err);
 });
-app.get('env') == 'development' ? mongoose.set('debug', true) : mongoose.set(debug, false)
+// app.get('env') == 'development' ? mongoose.set('debug', true) : mongoose.set(debug, false)
 mongoose.connection.on('connected', () => {
     let db = mongoose.connections[0].db;
     bucket = new mongoose.mongo.GridFSBucket(db, {
@@ -56,7 +56,6 @@ mongoose.connection.on('connected', () => {
 
 });
 //gridfs sotrage
-
 const storage = new GridFsStorage({
     url: `${MONGO_URL}`, file: (req, file) => {
         return new Promise((resolve, reject) => {

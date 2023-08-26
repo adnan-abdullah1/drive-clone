@@ -4,7 +4,7 @@
   "description": "google drive clone",
   "main": "app.js",
   "engines": {
-    "node": "14.x"
+    "node": "18.x"
   },
   "scripts": {
     "test": "",

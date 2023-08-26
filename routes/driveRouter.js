@@ -14,7 +14,7 @@ router.route('/folder/:parentFolderId/:forlderId')
 router.route('/:folderId/:userId')
         .get()
         .post(
-                upload.single('file'),
+                // upload.single('file'),
                 driveController.uploadData)
 router.route('/:userId/:resourceId')
         .delete((req, res, next) => { next(); }, () => { res.send("hiiii@@@@@@@@@") })

@@ -16,6 +16,7 @@ const morgan = require('morgan');
 const { debug } = require('console');
 const compression = require('compression')
 
+
 let { CLOUDINARY_URL, CLOUDINARY_SECRET, CLOUDINARY_DB, PORT, CLOUDINARY_APIKEY, MONGO_URL } = process.env
 const app = express();
 
@@ -34,7 +35,8 @@ app.use(compression({
         return compression.filter(req, res)
     }
 }))
-
+app.set('view engine', 'ejs'); // Set the default view engine
+app.set('views', 'views');
 //mongoose connection 
 const mnogooseConnection = mongoose.connect(`${MONGO_URL}`);
 mnogooseConnection.
@@ -88,7 +90,7 @@ cloudinary.config({
 app.use('/api/v1/drive', require('@Route/driveRouter'));
 app.use('/api/v1/auth', require('@Route/authRouter'));
 app.get('/', (req, res, next) => {
-    res.send('<h1>hello wolrd!!! this is drive clone</h1>')
+    res.render('index')
 })
 // const result = cloudinary.uploader.upload('./1.png')
 // result.then((any)=>console.log(any))

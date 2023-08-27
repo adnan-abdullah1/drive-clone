@@ -43,9 +43,9 @@ exports.createFolder = expressAsyncHandler(
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
         //check if parent folder is there
-        const parentFolderExist = await await driveModel.findById(parentFolderId)
-        if(!parentFolderExist){
-            return res.status(400).json({message:'Parent folder doesn\'t exist'});
+        const parentFolderExist =  await driveModel.findById(parentFolderId)
+        if (!parentFolderExist) {
+            return res.status(400).json({ message: 'Parent folder doesn\'t exist' });
         }
         let newDriveFolder = new driveModel({
             parentFolderId: new mongoose.Types.ObjectId(parentFolderId),
@@ -67,9 +67,50 @@ exports.createFolder = expressAsyncHandler(
 )
 exports.deleteFolder = expressAsyncHandler(
     async (req, res, next) => {
-        const { parentFolderId, folderId } = req.params;
+        const {  folderId } = req.params;
         if (!areMongoIdsValid([parentFolderId, folderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
+        }
+        const { canDeleteFolder } = await driveModel.aggregate([
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(folderId)
+                }
+            },
+            {
+                $project: {
+                    childFoldersSize: {
+                        "$size": "$nestedFolders"
+                    },
+                    filesSize: {
+                        "$size": "$files"
+                    },
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    canDeleteFolder: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    {
+                                        $gt: ["$childFoldersSize", 0]
+                                    },
+                                    {
+                                        $gt: ["$filesSize", 0]
+                                    }
+                                ]
+                            },
+                            then: false,
+                            else: true
+                        }
+                    }
+                }
+            }
+        ]);
+        if (!canDeleteFolder) {
+            return res.status(400).json({ message: "Folder can not be deleted, as it is not empy" })
         }
         const updatedParent = await driveModel.findByIdAndUpdate(parentFolderId, {
             $pull: {

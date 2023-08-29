@@ -99,7 +99,7 @@ exports.indexHtml = `<!DOCTYPE html>
         <div class="container">
             <h1>Your Ultimate Cloud Storage Solution</h1>
             <p>Securely store and access your files from anywhere, anytime.</p>
-            <a href="#" class="cta-button">Get Started</a>
+            <a href="https://frontend-jsgki2c54-addddd123.vercel.app/" class="cta-button">Get Started</a>
         </div>
     </section>
 </body>

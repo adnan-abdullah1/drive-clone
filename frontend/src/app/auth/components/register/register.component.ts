@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from
 import { ToastrService } from 'ngx-toastr';
 import { SharedService } from 'src/app/shared-service/shared-service.service';
 import { AuthService } from '../../services/auth-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,8 @@ export class RegisterComponent  {
   constructor(private fb: FormBuilder,
     private toastr: ToastrService,
     private sharedService:SharedService,
-    private authService : AuthService) { }
+    private authService : AuthService,
+    private router : Router) { }
   errorMessage = 'this is required Field'
   registrationForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -40,7 +42,8 @@ export class RegisterComponent  {
     this.authService.register(this.registrationForm.value).subscribe(
       {
        next:(value)=>{
-        this.toastr.success('User Registered')
+        this.toastr.success('User Registered');
+        this.router.navigate(['/login'])
        },
        error:(err)=>{
         this.toastr.error(err.message)

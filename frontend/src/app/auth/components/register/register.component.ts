@@ -43,10 +43,10 @@ export class RegisterComponent  {
       {
        next:(value)=>{
         this.toastr.success('User Registered');
-        this.router.navigate(['/login'])
+        this.router.navigate(['/login']);
        },
        error:(err)=>{
-        this.toastr.error(err.message)
+        this.toastr.error(err.error.message)
        },
        complete:()=>{}
       }

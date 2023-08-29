@@ -1,8 +1,8 @@
 <div class="" style="height: 91vh; width: 100vw;">
   <div class="d-flex align-items-center justify-content-center h-100 w-100">
-    <form class="row justify-content-center" [formGroup]="registrationForm">
+    <form class="row justify-content-center" [formGroup]="loginForm">
       <div class="ms-2 col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;">
+        <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="email">
           <mat-error *ngIf="form.email.errors?.required">Email is required</mat-error>
@@ -10,7 +10,7 @@
         </mat-form-field>
       </div>
       <div class="ms-2 col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;">
+        <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
           <mat-label>Password</mat-label>
           <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="password">
 
@@ -19,20 +19,9 @@
             {{form.password.errors?.minlength?.requiredLength}}</mat-error>
         </mat-form-field>
       </div>
-      <div class=" ms-2 col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;">
-          <mat-label>Confirm Password</mat-label>
-          <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="confirmPassword">
-          <mat-error *ngIf="form.confirmPassword.errors?.required">confirmPassword is missing</mat-error>
-          <mat-error
-          *ngIf="form.confirmPassword.errors?.passwordMismatch">
-            Passwords don't match.
-          </mat-error>
-        </mat-form-field>
-      </div>
       <div class=" col-12 col-md-9 mb-3">
-        <button mat-raised-button color="primary" class="w-50 float-left" [disabled]="registrationForm.invalid"
-        (click)="register()">Register</button>
+        <button mat-raised-button color="primary" class="w-50 float-left" [disabled]="loginForm.invalid"
+        (click)="login()">Register</button>
       </div>
     </form>
   </div>

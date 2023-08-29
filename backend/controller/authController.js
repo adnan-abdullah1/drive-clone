@@ -51,3 +51,21 @@ exports.register = expressAsyncHandler(
 
     }
 )
+exports.login = expressAsyncHandler(
+    async (req,res,next)=>{
+        const {email,password} = req.body;
+        if(!email && !password){
+            return res.status(400).json({message:'Login Failed'});
+        }
+        const user = await authModel.findOne({email:email});
+        if(!user){
+            return res.status(400).json({message:'Login Failed'}); 
+        }
+        const isPasswordValid = await bcrypt.compare(password,user.password);
+        if(!isPasswordValid){
+            return res.status(400).json({message:'Login Failed'});
+        }
+        return res.status(200).json({message:'Login Success'});
+
+    }
+)

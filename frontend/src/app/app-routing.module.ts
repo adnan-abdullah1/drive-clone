@@ -8,6 +8,7 @@ const routes: Routes = [
       import('./auth/auth-routing.module')
         .then(m => m.AuthRoutingModule)
   },
+  { path: 'drive', loadChildren: () => import('./drive/drive.module').then(m => m.DriveModule) },
 ];
 
 @NgModule({

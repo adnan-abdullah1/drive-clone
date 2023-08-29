@@ -4,27 +4,25 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing.module';
 import { RegisterComponent } from './components/register/register.component';
 import { MatInputModule } from '@angular/material/input';
+import {MatCardModule} from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms'; // Add this line
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
     RegisterComponent,
-    MatCardModule,
-
+    LoginComponent,
   ],
   imports: [
     CommonModule,
     AuthRoutingModule,
     MatInputModule,
-    MatButtonModule,
     MatCardModule,
-    MatFormFieldModule,
-    FormsModule
+    ReactiveFormsModule,
+    MatButtonModule
 
+  ],
 
-  ]
 })
 export class AuthModule { }

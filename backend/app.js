@@ -20,7 +20,7 @@ const cors = require('cors')
 let { CLOUDINARY_URL, CLOUDINARY_SECRET, CLOUDINARY_DB, PORT, CLOUDINARY_APIKEY, MONGO_URL } = process.env
 const app = express();
 
-
+app.use(cors())
 app.use(helmet())
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,7 +35,7 @@ app.use(compression({
         return compression.filter(req, res)
     }
 }))
-app.use(cors())
+
 // app.set('view engine', 'ejs'); // Set the default view engine
 // app.set('views', 'views');
 //mongoose connection 

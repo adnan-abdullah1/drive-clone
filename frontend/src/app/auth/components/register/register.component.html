@@ -1,39 +1,47 @@
-<div class="" style="height: 91vh; width: 100vw;">
-  <div class="d-flex align-items-center justify-content-center h-100 w-100">
-    <form class="row justify-content-center" [formGroup]="registrationForm">
-      <div class="ms-2 col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;">
-          <mat-label>Email</mat-label>
-          <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="email">
-          <mat-error *ngIf="form.email.errors?.required">Email is required</mat-error>
-          <mat-error *ngIf="form.email.errors?.email">Email is not valid</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="ms-2 col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;">
-          <mat-label>Password</mat-label>
-          <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="password">
+<div class="container-fluid" style="height: 91vh; width: 100vw; ">
+  <div class="d-flex  justify-content-center h-100 w-100 mb-4" >
 
-          <mat-error *ngIf="form.password.errors?.required">Password is required</mat-error>
-          <mat-error *ngIf="form.password.errors?.minlength">Password length should be
-            {{form.password.errors?.minlength?.requiredLength}}</mat-error>
-        </mat-form-field>
-      </div>
-      <div class=" ms-2 col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;">
-          <mat-label>Confirm Password</mat-label>
-          <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="confirmPassword">
-          <mat-error *ngIf="form.confirmPassword.errors?.required">confirmPassword is missing</mat-error>
-          <mat-error
-          *ngIf="form.confirmPassword.errors?.passwordMismatch">
-            Passwords don't match.
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class=" col-12 col-md-9 mb-3">
-        <button mat-raised-button color="primary" class="w-50 float-left" [disabled]="registrationForm.invalid"
-        (click)="register()">Register</button>
-      </div>
-    </form>
+    <mat-card class="example-card h-75 d-flex flex-column justify-content-center align-items-center ">
+      <mat-card-header class="mb-4">
+        <mat-card-title style="font-size: 30px;">Register</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form class="row justify-content-center" [formGroup]="registrationForm">
+          <div class=" col-12 col-md-9 mb-3">
+            <mat-form-field class="example-full-width" style="width: 100%; " appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="email">
+              <mat-error *ngIf="form.email.errors?.required">Email is required</mat-error>
+              <mat-error *ngIf="form.email.errors?.email">Email is not valid</mat-error>
+            </mat-form-field>
+          </div>
+          <div class=" col-12 col-md-9 mb-3">
+            <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
+              <mat-label>Password</mat-label>
+              <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="password">
+
+              <mat-error *ngIf="form.password.errors?.required">Password is required</mat-error>
+              <mat-error *ngIf="form.password.errors?.minlength">Password length should be
+                {{form.password.errors?.minlength?.requiredLength}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class=" col-12 col-md-9 mb-3">
+            <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
+              <mat-label>Confirm Password</mat-label>
+              <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="confirmPassword">
+              <mat-error *ngIf="form.confirmPassword.errors?.required">confirmPassword is missing</mat-error>
+              <mat-error *ngIf="form.confirmPassword.errors?.passwordMismatch">
+                Passwords don't match.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-12 col-md-9 mb-3">
+            <button mat-raised-button color="primary" class="w-100" [disabled]="registrationForm.invalid"
+              (click)="register()">Register</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

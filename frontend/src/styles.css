@@ -9,10 +9,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 mat-label{
   font-size: 20px;
 }
-::ng-deep input{
-  font-size: 40px;
-}
 
+input{
+  font-size: 20px !important;
+}
  mat-error{
   font-size: 15px;
 }

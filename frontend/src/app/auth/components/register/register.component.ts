@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedService } from 'src/app/shared-service/shared-service.service';
 import { AuthService } from '../../services/auth-service.service';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -12,12 +13,15 @@ import { Router } from '@angular/router';
 })
 
 export class RegisterComponent  {
-
+  isUserLoggedIn$ :BehaviorSubject<boolean>;
   constructor(private fb: FormBuilder,
     private toastr: ToastrService,
     private sharedService:SharedService,
     private authService : AuthService,
-    private router : Router) { }
+    private router : Router) {
+      this.isUserLoggedIn$ = this.authService.isLoggedIn()
+      this.isUserLoggedIn$.next(false);
+    }
   errorMessage = 'this is required Field'
   registrationForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

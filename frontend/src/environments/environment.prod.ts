@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl:'http://localhost:3001/api/v1/'
+  apiUrl:'https://backend-beryl-one.vercel.app/api/v1/'
 
 };

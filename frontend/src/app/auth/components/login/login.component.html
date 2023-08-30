@@ -2,9 +2,9 @@
   <div class="d-flex align-items-center justify-content-center h-100 w-100">
     <form class="row justify-content-center" [formGroup]="loginForm">
       <div class="col-12 col-md-9 mb-3">
-        <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
+        <mat-form-field class="example-full-width" style="width: 100%; " appearance="outline">
           <mat-label >Email</mat-label>
-          <input matInput placeholder="Ex. Pizza" style="font-size: 20px;" value="Sushi" formControlName="email">
+          <input matInput placeholder="Ex. Pizza"  value="Sushi" formControlName="email">
           <mat-error *ngIf="form.email.errors?.required">Email is required</mat-error>
           <mat-error *ngIf="form.email.errors?.email">Email is not valid</mat-error>
         </mat-form-field>
@@ -12,7 +12,7 @@
       <div class=" col-12 col-md-9 mb-3">
         <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="Ex. Pizza" value="Sushi" formControlName="password">
+          <input matInput placeholder="Ex. Pizza"  value="Sushi" formControlName="password">
 
           <mat-error *ngIf="form.password.errors?.required">Password is required</mat-error>
           <mat-error *ngIf="form.password.errors?.minlength">Password length should be
@@ -20,7 +20,7 @@
         </mat-form-field>
       </div>
       <div class=" col-12 col-md-9 mb-3">
-        <button mat-raised-button color="primary" class="w-50 float-left" [disabled]="loginForm.invalid"
+        <button mat-raised-button color="primary" class="w-100 " [disabled]="loginForm.invalid"
         (click)="login()">Register</button>
       </div>
     </form>

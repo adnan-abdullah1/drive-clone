@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ReactiveFormsComponent } from './reactive-forms/reactive-forms.component';
 
 const routes: Routes = [
   {
@@ -9,6 +10,7 @@ const routes: Routes = [
         .then(m => m.AuthRoutingModule)
   },
   { path: 'drive', loadChildren: () => import('./drive/drive.module').then(m => m.DriveModule) },
+{path:'rx',component:ReactiveFormsComponent}
 ];
 
 @NgModule({

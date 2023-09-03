@@ -13,18 +13,21 @@ exports.uploadData = expressAsyncHandler(
         if (!areMongoIdsValid([folderId, req.file?.id, userId])) {
             return res.status(400).json({ error: true, message: 'object Ids are not valid', data: {} });
         }
-        const sizeUpdated = await driveModel.findOneAndUpdate({ userId }, {
+        const sizeUpdated = await driveModel.findOneAndUpdate({ userId: userId }, {
             $inc: {
                 'occupiedSpace': parseInt(contentLengthInBytes)
             }
         })
         if (sizeUpdated) {
-            const newSavedFile = await driveModel.findByIdAndUpdate(new mongoose.Types.ObjectId(folderId),
+            const newSavedFile = await driveModel.findByIdAndUpdate(folderId,
                 {
                     $push: {
-                        files: req.file?.id
+                        files: {
+                            fileId: req.file.id,
+                            fileName: req.file.originalname
+                        }
                     }
-                })
+                }, { uspsert: true })
             if (!newSavedFile) {
                 return res.status(400).json({ message: 'file could not be uploaded ', data: {} })
             }
@@ -43,7 +46,7 @@ exports.createFolder = expressAsyncHandler(
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
         //check if parent folder is there
-        const parentFolderExist =  await driveModel.findById(parentFolderId)
+        const parentFolderExist = await driveModel.findById(parentFolderId)
         if (!parentFolderExist) {
             return res.status(400).json({ message: 'Parent folder doesn\'t exist' });
         }
@@ -67,7 +70,7 @@ exports.createFolder = expressAsyncHandler(
 )
 exports.deleteFolder = expressAsyncHandler(
     async (req, res, next) => {
-        const {  folderId } = req.params;
+        const { folderId } = req.params;
         if (!areMongoIdsValid([parentFolderId, folderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
@@ -130,6 +133,21 @@ exports.deleteFolder = expressAsyncHandler(
     }
 )
 
+exports.getFolder = expressAsyncHandler(
+    async (req, res, next) => {
+        const { folderId } = req.params;
+        let { isParentFolder } = req.query
+        if (!areMongoIdsValid([folderId])) {
+            return res.status(400).json({ error: true, message: 'objectIds! are not valid', data: {} });
+        }
+        let folder;
+        if (isParentFolder == 'true')
+            folder = await driveModel.findOne({ userId: new mongoose.Types.ObjectId(folderId) })
+        else
+            folder = await driveModel.findById(folderId)
+        return res.json({ message: 'data found', folder })
+    }
+)
 
 exports.shareFiles = expressAsyncHandler(
     async (req, res, next) => {

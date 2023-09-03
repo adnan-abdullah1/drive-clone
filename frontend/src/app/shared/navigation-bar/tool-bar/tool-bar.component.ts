@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/auth/services/auth-service.service';
 export class ToolBarComponent implements OnInit {
   isUserLoggedIn$:BehaviorSubject<boolean>;
   showNavBar:boolean=true;
+  email:string='';
   constructor(private authService : AuthService) {
     this.isUserLoggedIn$ = this.authService.isLoggedIn();
     this.isUserLoggedIn$.subscribe(
@@ -17,6 +18,11 @@ export class ToolBarComponent implements OnInit {
         next:(val:any)=>this.showNavBar=val
       }
     )
+    this.authService.getEmailSubject().subscribe({
+      next:(value:string)=>{
+        this.email=value
+      }
+    })
    }
 
   ngOnInit(): void {

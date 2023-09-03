@@ -1,14 +1,19 @@
-<mat-toolbar class="w-110" *ngIf="showNavBar">
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar class="w-100" *ngIf="showNavBar">
+    <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
       <mat-icon>menu</mat-icon>
-    </button>
-    <span>My App</span>
+    </button> -->
+    <span>Drive</span>
     <span class="example-spacer"></span>
     <!-- <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
       <mat-icon>favorite</mat-icon>
-    </button>
-    <button mat-icon-button class="example-icon " aria-label="Example icon-button with share icon">
-      <mat-icon>share</mat-icon>
-    </button> -->
+    </button>-->
+
+  <button mat-icon-button class="example-icon me-4" style="" aria-label="Example icon-button with share icon">
+    <mat-icon>login</mat-icon>
+    <mat-icon>logout</mat-icon>
+  </button>
+  {{email}}
+
+
   </mat-toolbar>
 

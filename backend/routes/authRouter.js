@@ -1,20 +1,21 @@
 
 const express = require('express');
 const router = express.Router();
-let upload ;
-upload=require('../app')
-const driveController = require('../controller/authController');
+let upload;
+upload = require('../app')
+const authController = require('../controller/authController');
 const registerValidator = require('../validators/requestValidators');
 // console.log(upload,'###')
 router.route('/register')
-    .post(registerValidator,driveController.register)
+    .post(registerValidator, authController.register)
 router.route('/login')
-    .post(driveController.login)
+    .post(authController.login)
 
 router.route('/register')
-    .post(()=>{})
-    
+    .post(() => { })
 
+router.route('/user/:userId')
+    .get(authController.userInfo)
 
 
 module.exports = router;

@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
   apiUrl = environment.apiUrl;
   private isUserLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private getEmail: BehaviorSubject<string> = new BehaviorSubject<string>(localStorage.getItem('email') || '');
   constructor(private http: HttpClient) { }
   register(registrationForm: registerInterface) {
     return this.http.post(`${this.apiUrl}auth/register`, registrationForm)
@@ -19,4 +20,8 @@ export class AuthService {
   isLoggedIn(): BehaviorSubject<boolean> {
     return this.isUserLoggedIn;
   }
+  getEmailSubject():BehaviorSubject<string>{
+    return this.getEmail;
+  }
+
 }

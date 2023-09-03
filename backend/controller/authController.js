@@ -4,6 +4,7 @@ const driveModel = require("../models/driveModel");
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
 const { SendMail } = require("../util/mailer");
+const areMongoIdsValid = require("../validators/mongoIdValidator");
 
 const SALT_ROUNDS = 10;
 exports.register = expressAsyncHandler(
@@ -23,6 +24,7 @@ exports.register = expressAsyncHandler(
             if (savedNewUser) {
                 //make entry in drive//
                 let newDriveSpace = new driveModel({
+                    folderName:'parentFolder',
                     userId: savedNewUser._id,
                     files: [],
                     nestedFolders: []
@@ -65,7 +67,18 @@ exports.login = expressAsyncHandler(
         if(!isPasswordValid){
             return res.status(400).json({message:'Login Failed'});
         }
-        return res.status(200).json({message:'Login Success'});
+        user.password = '';
+        return res.status(200).json({message:'Login Success',user});
 
+    }
+)
+exports.userInfo = expressAsyncHandler(
+    async (req,res,next)=>{
+        const {userId} = req.params;
+        if(!areMongoIdsValid([userId])){
+            return res.status(400).json({message:'invalid ObjectId'})
+        }
+        const userDetails  = await authModel.findById(userId,{email:1});
+        return res.json({message:'found user details',userDetails})
     }
 )

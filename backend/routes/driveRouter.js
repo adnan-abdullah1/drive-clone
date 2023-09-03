@@ -20,6 +20,8 @@ router.route('/:userId/:resourceId')
         .put(() => { })
 router.route('/share-files')
                 .post(driveController.shareFiles)
+router.route('/folder/:folderId')
+                .get(driveController.getFolder)
 
 
 

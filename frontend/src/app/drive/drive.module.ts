@@ -5,6 +5,7 @@ import { DriveRoutingModule } from './drive-routing.module';
 import { DriveComponent } from './components/drive-component/drive.component';
 import { MatCardModule } from '@angular/material/card';
 import {MatMenuModule} from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import {MatMenuModule} from '@angular/material/menu';
     CommonModule,
     DriveRoutingModule,
     MatCardModule,
-    MatMenuModule
+    MatMenuModule,
+    MatIconModule
   ]
 })
 export class DriveModule { }

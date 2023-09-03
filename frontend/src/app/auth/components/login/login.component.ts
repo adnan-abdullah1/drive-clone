@@ -11,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent  {
-  isUserLoggedIn$ :BehaviorSubject<boolean>;
+  isUserLoggedIn$ :BehaviorSubject<boolean>
   constructor(private fb :FormBuilder,
     private authService: AuthService,
     private sharedService :SharedService,
@@ -31,10 +31,12 @@ export class LoginComponent  {
   }
   login(){
     this.authService.login(this.loginForm.value).subscribe({
-      next:()=>{
+      next:(res:any)=>{
         this.sharedService.success('login success');
         this.isUserLoggedIn$.next(true);
-        this.router.navigate(['/drive'])
+        localStorage.setItem('userId',res.user._id)
+        this.authService.getEmailSubject().next(res.user.email)
+        this.router.navigate(['/drive'], { queryParams: { isParentFolder: 'true' } })
       },
       error:(err)=>{
         this.sharedService.error(err.error.message)

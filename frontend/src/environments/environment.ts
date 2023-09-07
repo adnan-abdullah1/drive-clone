@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl:' https://0352-2405-201-550f-9958-10ed-5261-cec9-a93d.ngrok-free.app/api/v1/'
+  apiUrl:'https://0352-2405-201-550f-9958-10ed-5261-cec9-a93d.ngrok-free.app/api/v1/'
   // apiUrl:'http://localhost:3001/api/v1/'
 };
 

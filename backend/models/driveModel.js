@@ -19,6 +19,9 @@ const driveModel = new mongoose.Schema({
             folderId: {
                 type: mongoose.Types.ObjectId,
             },
+            folderName:{
+                type:String
+            }
         }
     ]
 })

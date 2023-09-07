@@ -42,6 +42,7 @@ exports.uploadData = expressAsyncHandler(
 exports.createFolder = expressAsyncHandler(
     async (req, res, next) => {
         const { parentFolderId } = req.params;
+        const {folderName}=req.body;
         if (!areMongoIdsValid([parentFolderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
@@ -62,7 +63,7 @@ exports.createFolder = expressAsyncHandler(
         //push entry in parentFolder
         const updatedParent = await driveModel.findByIdAndUpdate(parentFolderId, {
             $push: {
-                nestedFolders: isFolderCreated._id
+                nestedFolders: {folderId:isFolderCreated._id,folderName:folderName}
             }
         })
         return res.json({ error: false, message: 'folder is created', data: { isFolderCreated } });

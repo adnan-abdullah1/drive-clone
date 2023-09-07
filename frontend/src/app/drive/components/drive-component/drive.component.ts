@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { DriveService } from '../../service/drive.service';
-import {imgaeBase64} from './image-base-64'
+import { imgaeBase64 } from './image-base-64';
+
 @Component({
   selector: 'app-drive',
   templateUrl: './drive.component.html',
@@ -12,8 +13,8 @@ export class DriveComponent implements OnInit {
   @ViewChild(MatMenuTrigger) trigger !: MatMenuTrigger;
   isParentFolder: boolean = false;
   userId: string = localStorage.getItem('userId')!;
-  folderData: any={};
-  fileExtensions:Array<string>=[];
+  folderData: any = {};
+  fileExtensions: Array<string> = [];
   constructor(private ac: ActivatedRoute,
     private driveService: DriveService) {
     this.ac.queryParamMap.subscribe({
@@ -24,11 +25,25 @@ export class DriveComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.driveService.driveDialogAdded.subscribe({
+      next: (value) => {
+        if (value) {
+          this.loadDriveData();
+        }
+      }
+    })
+    this.loadDriveData();
+
+  }
+  loadDriveData() {
     this.driveService.getFolder(this.userId, this.isParentFolder).subscribe(
       {
         next: (res: any) => {
           this.folderData = res.folder;
-          this.makeFileExtensionArray()
+          this.makeFileExtensionArray();
+          if (this.isParentFolder) {
+            localStorage.setItem('folderId', res.folder._id)
+          }
 
         }
       }
@@ -37,24 +52,27 @@ export class DriveComponent implements OnInit {
   openMenu() {
     this.trigger.openMenu();
   }
-  makeFileExtensionArray(){
-    this.folderData.files.forEach((element:{fileId:string,_id:string,fileName:string}) => {
+  makeFileExtensionArray() {
+    this.folderData.files.forEach((element: { fileId: string, _id: string, fileName: string }) => {
       const fileExtension = element.fileName.split('').reverse().join('').split('.')[0].split('').reverse().join('');
       this.fileExtensions.push(fileExtension)
     });
-    console.log(this.fileExtensions)
   }
 
-  getImage(index:number){
+  getImage(index: number) {
     const fileExtensionType = this.fileExtensions[index];
-    switch(fileExtensionType){
+    switch (fileExtensionType) {
       case 'pdf':
         return imgaeBase64.pdf;
       case 'json':
         return imgaeBase64.json
       case 'png':
         return imgaeBase64.image
-          default:
+      case 'rar':
+        return imgaeBase64.zip
+      case 'zip':
+        return imgaeBase64.zip
+      default:
         return '..'
     }
   }

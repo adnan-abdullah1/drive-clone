@@ -17,6 +17,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsComponent } from './reactive-forms/reactive-forms.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +38,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AuthModule,
     ToastrModule.forRoot(),
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDialogModule
     // NgbModule
   ],
   providers: [],

@@ -10,7 +10,7 @@ const driveModel = new mongoose.Schema({
     files: [
         {
             fileId: mongoose.Schema.Types.ObjectId, fileName: {
-                type: String
+                type: String,unique:true
             }
         }
     ],
@@ -20,7 +20,7 @@ const driveModel = new mongoose.Schema({
                 type: mongoose.Types.ObjectId,
             },
             folderName:{
-                type:String
+                type:String , unique: true
             }
         }
     ]

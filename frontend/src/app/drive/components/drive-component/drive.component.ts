@@ -3,6 +3,9 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { DriveService } from '../../service/drive.service';
 import { imgaeBase64 } from './image-base-64';
+import { SharedService } from 'src/app/shared-service/shared-service.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-drive',
@@ -15,8 +18,13 @@ export class DriveComponent implements OnInit {
   userId: string = localStorage.getItem('userId')!;
   folderData: any = {};
   fileExtensions: Array<string> = [];
+  menu: any[] = [];
   constructor(private ac: ActivatedRoute,
-    private driveService: DriveService) {
+    private driveService: DriveService,
+    private sharedService : SharedService,
+    private dialog : MatDialog) {
+
+
     this.ac.queryParamMap.subscribe({
       next: (params) => {
         this.isParentFolder = !!params.get('isParentFolder');
@@ -49,7 +57,8 @@ export class DriveComponent implements OnInit {
       }
     )
   }
-  openMenu() {
+
+  openOnMouseOver() {
     this.trigger.openMenu();
   }
   makeFileExtensionArray() {
@@ -58,7 +67,31 @@ export class DriveComponent implements OnInit {
       this.fileExtensions.push(fileExtension)
     });
   }
-
+  deleteFolder(folderId: string) {
+    this.driveService.deleteFolder(folderId).subscribe({
+      next:(res:any)=>{
+        if(res.error){
+          this.sharedService.error(res.message);
+          return;
+        }
+        this.sharedService.success(res.message);
+        this.loadDriveData();
+      },
+      error:(err:any)=>{
+        this.sharedService.error(err.message || err.error.message)
+      }
+    })
+  }
+  openRenameFolderDialog(folderId:string){
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {usage: 'renameFolder', folderId:folderId},
+      height: '240px',
+      width: '300px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.driveService.dialogData();
+    });
+  }
   getImage(index: number) {
     const fileExtensionType = this.fileExtensions[index];
     switch (fileExtensionType) {

@@ -39,4 +39,18 @@ export class DialogComponent implements OnInit {
       }
     )
   }
+  renameFolder(){
+    this.driveService.renameFolder(this.folderName,this.folderId).subscribe(
+      {
+        next:(res:any)=>{
+          if(res.error){
+            this.sharedService.error(res.message);
+            return;
+          }
+          this.sharedService.success('Folder created');
+          this.dialogRef.close();
+        }
+      }
+    )
+  }
 }

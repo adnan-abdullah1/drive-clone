@@ -15,9 +15,14 @@ export class DriveService {
   crateFolder(folderName:string,parentFolderId:string){
     return this.http.post(`${this.apiUrl}drive/create-folder/${parentFolderId}`,{folderName:folderName})
   }
+  renameFolder(folderName:string,parentFolderId:string){
+    return this.http.put(`${this.apiUrl}drive/rename-folder/${parentFolderId}`,{folderName:folderName})
+  }
   dialogData(){
     this.driveDialogAdded.next(true);
   }
-
+  deleteFolder(folderId:string){
+    return this.http.delete(`${this.apiUrl}drive/delete-folder/${folderId}`)
+  }
 
 }

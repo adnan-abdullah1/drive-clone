@@ -40,6 +40,8 @@ export class ToolBarComponent implements OnInit {
   openCreateFolderDialog(){
     const dialogRef = this.dialog.open(DialogComponent, {
       data: {usage: 'createFolder', folderId:localStorage.getItem('folderId')},
+      height: '240px',
+      width: '300px',
     });
     dialogRef.afterClosed().subscribe(result => {
       this.driveService.dialogData();

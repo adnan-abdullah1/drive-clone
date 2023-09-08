@@ -48,6 +48,7 @@ mongoose.connection.on('error', err => {
     console.log(err);
 });
 // app.get('env') == 'development' ? mongoose.set('debug', true) : mongoose.set(debug, false)
+mongoose.set('debug', true) 
 mongoose.connection.on('connected', () => {
     let db = mongoose.connections[0].db;
     bucket = new mongoose.mongo.GridFSBucket(db, {

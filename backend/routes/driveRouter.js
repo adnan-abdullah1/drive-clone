@@ -8,8 +8,10 @@ const driveController = require('../controller/driveController')
 // console.log(upload,'###')
 router.route('/create-folder/:parentFolderId')
         .post(driveController.createFolder);
-router.route('/folder/:forlderId')
+router.route('/delete-folder/:folderId')
         .delete(driveController.deleteFolder)
+router.route('/rename-folder/:folderId')
+        .put(driveController.renameFolder)
 router.route('/:folderId/:userId')
         .get()
         .post(

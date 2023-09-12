@@ -3,14 +3,14 @@ const mongoose = require('mongoose');
 const driveModel = new mongoose.Schema({
     userId: mongoose.Schema.Types.ObjectId,
     parentFolderId: mongoose.Schema.Types.ObjectId,
-    folderName: { type: String },
+    folderName: { type: String ,unique:false},
     occupiedSpace: {
         type: Number, default: 0
     },
     files: [
         {
             fileId: mongoose.Schema.Types.ObjectId, fileName: {
-                type: String,unique:true
+                type: String,
             }
         }
     ],
@@ -20,7 +20,7 @@ const driveModel = new mongoose.Schema({
                 type: mongoose.Types.ObjectId,
             },
             folderName:{
-                type:String , unique: true
+                type:String 
             }
         }
     ]

@@ -16,7 +16,7 @@
 </div>
 <!-- rename folder logic -->
 <div *ngIf="usage === 'renameFolder'">
-  <h1 mat-dialog-title>Create Folder</h1>
+  <h1 mat-dialog-title>Rename Folder</h1>
   <div mat-dialog-content >
     <mat-form-field class="example-full-width" style="width: 240px;">
       <mat-label>New Folder Name</mat-label>
@@ -30,3 +30,51 @@
     (click)="renameFolder()">Submit</button>
   </div>
 </div>
+<!-- rename file logic -->
+<div *ngIf="usage === 'renameFile'">
+  <h1 mat-dialog-title>Rename File</h1>
+  <div mat-dialog-content >
+    <mat-form-field class="example-full-width" style="width: 240px;">
+      <mat-label>New File Name</mat-label>
+      <input  matInput placeholder="New file name" [(ngModel)]="fileName" >
+
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close color="warn">Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="!fileName"
+    (click)="renameFile()">Submit</button>
+  </div>
+</div>
+<!--  Share File -->
+<div class="d-flex flex-column  justify-content-center" *ngIf="usage === 'shareFile'">
+  <mat-form-field>
+    <mat-label>Select user</mat-label>
+    <mat-select [(ngModel)]="selectedUserId" name="food" >
+      <mat-option *ngFor="let user of userList" [value]="user._id" >
+        {{user.email}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close color="warn">Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="!selectedUserId"
+    >Submit</button>
+  </div>
+</div>
+<!-- Upload file -->
+<div class="d-flex flex-column" *ngIf="usage=='UploadFile'">
+  <h2>Upload File</h2>
+  <input type="file"  #file hidden (change)="uploadFile($event)" >
+  <button mat-raised-button color="primary" class="mb-4"  (click)="file.click()">{{fileUploadStatus}}&nbsp;{{progressBarValue}}%</button>
+  <mat-progress-bar
+  class="example-margin"
+  color="accent"
+  mode="determinate"
+  [value]="progressBarValue"
+  [bufferValue]="bufferValue"
+>
+
+</mat-progress-bar>
+</div>
+

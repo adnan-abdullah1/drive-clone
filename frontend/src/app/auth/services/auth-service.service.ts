@@ -23,5 +23,8 @@ export class AuthService {
   getEmailSubject():BehaviorSubject<string>{
     return this.getEmail;
   }
+  getUserList(){
+    return this.http.get(`${this.apiUrl}auth/users`)
+  }
 
 }

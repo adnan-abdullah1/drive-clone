@@ -24,7 +24,7 @@ exports.register = expressAsyncHandler(
             if (savedNewUser) {
                 //make entry in drive//
                 let newDriveSpace = new driveModel({
-                    folderName:'parentFolder',
+                    folderName: 'parentFolder',
                     userId: savedNewUser._id,
                     files: [],
                     nestedFolders: []
@@ -54,31 +54,43 @@ exports.register = expressAsyncHandler(
     }
 )
 exports.login = expressAsyncHandler(
-    async (req,res,next)=>{
-        const {email,password} = req.body;
-        if(!email && !password){
-            return res.status(400).json({message:'Login Failed'});
+    async (req, res, next) => {
+        const { email, password } = req.body;
+        if (!email && !password) {
+            return res.status(400).json({ message: 'Login Failed' });
         }
-        const user = await authModel.findOne({email:email});
-        if(!user){
-            return res.status(400).json({message:'Login Failed'}); 
+        const user = await authModel.findOne({ email: email });
+        if (!user) {
+            return res.status(400).json({ message: 'Login Failed' });
         }
-        const isPasswordValid = await bcrypt.compare(password,user.password);
-        if(!isPasswordValid){
-            return res.status(400).json({message:'Login Failed'});
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Login Failed' });
         }
         user.password = '';
-        return res.status(200).json({message:'Login Success',user});
+        return res.status(200).json({ message: 'Login Success', user });
 
     }
 )
 exports.userInfo = expressAsyncHandler(
-    async (req,res,next)=>{
-        const {userId} = req.params;
-        if(!areMongoIdsValid([userId])){
-            return res.status(400).json({message:'invalid ObjectId'})
+    async (req, res, next) => {
+        const { userId } = req.params;
+        if (!areMongoIdsValid([userId])) {
+            return res.status(400).json({ message: 'invalid ObjectId' })
         }
-        const userDetails  = await authModel.findById(userId,{email:1});
-        return res.json({message:'found user details',userDetails})
+        const userDetails = await authModel.findById(userId, { email: 1 });
+        return res.json({ message: 'found user details', userDetails })
+    }
+)
+exports.usersList = expressAsyncHandler(
+    async (req, res, next) => {
+        const { email } = req.query;
+        let users;
+        if (email) {
+            // users = await authModel.find({email:RegExp()}, { email: 1 });
+        }
+        else
+            users = await authModel.find({}, { email: 1 });
+        return res.json({ message: 'found user list', users })
     }
 )

@@ -17,6 +17,7 @@ router.route('/:folderId/:userId')
         .post(
                 upload.single('file'),
                 driveController.uploadData)
+        .put(driveController.renameFile)
 router.route('/:userId/:resourceId')
         .delete((req, res, next) => { next(); }, () => { res.send("hiiii@@@@@@@@@") })
         .put(() => { })

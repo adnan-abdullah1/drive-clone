@@ -9,17 +9,28 @@ const { SendFilesSharedMail } = require("../util/mailer");
 exports.uploadData = expressAsyncHandler(
     async (req, res, next) => {
         const { userId, folderId } = req.params;
-        const contentLengthInBytes = req.headers['content-length'] / 1024  //set size in KB
+        const contentLengthInBytes = req.headers['content-length'] / 1024  //set size in KB;
+        const isParentFolder = req.query.isParentFolder === 'true';
+        console.log(req.params, req.file)
         if (!areMongoIdsValid([folderId, req.file?.id, userId])) {
             return res.status(400).json({ error: true, message: 'object Ids are not valid', data: {} });
         }
-        const sizeUpdated = await driveModel.findOneAndUpdate({ userId: userId }, {
+        let query;
+        if (isParentFolder) {
+            query = { userId: new mongoose.Types.ObjectId(folderId) }
+        }
+        else {
+            query = {
+                _id: new mongoose.Types.ObjectId(folderId)
+            }
+        }
+        const sizeUpdated = await driveModel.findOneAndUpdate({ userId: new mongoose.Types.ObjectId(userId) }, {
             $inc: {
                 'occupiedSpace': parseInt(contentLengthInBytes)
             }
         })
         if (sizeUpdated) {
-            const newSavedFile = await driveModel.findByIdAndUpdate(folderId,
+            const newSavedFile = await driveModel.findOneAndUpdate(query,
                 {
                     $push: {
                         files: {
@@ -31,40 +42,93 @@ exports.uploadData = expressAsyncHandler(
             if (!newSavedFile) {
                 return res.status(400).json({ message: 'file could not be uploaded ', data: {} })
             }
-            return res.status(400).json({ message: 'file uploaded successfully', data: newSavedFile })
+            return res.status(200).json({ message: 'file uploaded successfully', data: newSavedFile })
         }
         else {
             return res.status(400).json({ message: 'file couldn\t be uploaded', data: {} })
         }
     }
 )
+exports.renameFile = expressAsyncHandler(
+    async (req, res, next) => {
+        const { userId, folderId } = req.params;
+        const { fileName } = req.body;
+        const isParentFolder = req.query.isParentFolder === 'true';
+        console.log(req.params, req.file)
+        if (!areMongoIdsValid([folderId, userId])) {
+            return res.status(400).json({ error: true, message: 'object Ids are not valid', data: {} });
+        }
+        let query;
+        if (isParentFolder) {
+            query = { userId: new mongoose.Types.ObjectId(folderId) }
+        }
+        else {
+            query = {
+                _id: new mongoose.Types.ObjectId(folderId)
+            }
+        }
+        const deleteFile = await driveModel.findOneAndUpdate(query,
+            {
+                $pull: {
+                    files: {
+                        "fileId": new mongoose.Types.ObjectId(fileId)
+                    }
+                }
+            })
+        if (!deleteFile)
+            return res.status(400).json({ message: 'file could not be uploaded ', data: {} })
+
+        const addRenamedFile = await driveModel.findOneAndUpdate(query,
+            {
+                $push: {
+                    files: { fileId: fileId, fileName: fileName }
+                }
+            })
+        return res.status(200).json({ message: 'file uploaded successfully', })
+    }
+)
 
 exports.createFolder = expressAsyncHandler(
     async (req, res, next) => {
         const { parentFolderId } = req.params;
-        const {folderName}=req.body;
+        const isParentFolder = req.query.isParentFolder === 'true'
+        const { folderName } = req.body;
         if (!areMongoIdsValid([parentFolderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
         //check if parent folder is there
         const parentFolderExist = await driveModel.findById(parentFolderId)
-        if (!parentFolderExist) {
+        if (!parentFolderExist && !isParentFolder) {
             return res.status(400).json({ message: 'Parent folder doesn\'t exist' });
         }
-        let newDriveFolder = new driveModel({
-            parentFolderId: new mongoose.Types.ObjectId(parentFolderId),
-            folderName:folderName,
-            files: [],
-            nestedFolders: []
-        })
+        let newDriveFolder
+        try {
+
+            newDriveFolder = new driveModel({
+                parentFolderId: parentFolderId,
+                folderName: folderName,
+                files: [],
+                nestedFolders: []
+            })
+        }
+        catch (err) {
+            console.log(err)
+        }
         const isFolderCreated = await newDriveFolder.save();
         if (!isFolderCreated) {
             return res.status(400).json({ error: true, message: 'couldn\'t create folder' })
         }
-        //push entry in parentFolder
-        const updatedParent = await driveModel.findByIdAndUpdate(parentFolderId, {
+        //push entry in 
+        let query;
+        if (isParentFolder) {
+            query = { userId: parentFolderId }
+        }
+        else {
+            query = { _id: parentFolderId }
+        }
+        const updatedParent = await driveModel.findOneAndUpdate(query, {
             $push: {
-                nestedFolders: {folderId:isFolderCreated._id,folderName:folderName}
+                nestedFolders: { folderId: isFolderCreated._id, folderName: folderName }
             }
         })
         return res.json({ error: false, message: 'folder is created', data: { isFolderCreated } });
@@ -72,13 +136,21 @@ exports.createFolder = expressAsyncHandler(
 )
 exports.deleteFolder = expressAsyncHandler(
     async (req, res, next) => {
-        const { folderId } = req.params;
+        let { folderId } = req.params;
+        const isParentFolder = req.query.isParentFolder === 'true'
         if (!areMongoIdsValid([folderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
-        const folder = await driveModel.findById(folderId,{parentFolderId:1})
+        folderId = new mongoose.Types.ObjectId(folderId)
+        const folder = await driveModel.findById(folderId, { parentFolderId: 1 })
         const parentFolderId = folder.parentFolderId
-        const  folderInfo  = await driveModel.aggregate([
+        let query;
+        if (isParentFolder) {
+            query = { userId: new mongoose.Types.ObjectId(parentFolderId) }
+        }
+        else
+            query = { _id: new mongoose.Types.ObjectId(parentFolderId) }
+        const folderInfo = await driveModel.aggregate([
             {
                 $match: {
                     _id: new mongoose.Types.ObjectId(folderId)
@@ -119,17 +191,17 @@ exports.deleteFolder = expressAsyncHandler(
         if (!folderInfo[0].canDeleteFolder) {
             return res.status(400).json({ message: "Folder can not be deleted, as it is not empy" })
         }
-        const updatedParent = await driveModel.findByIdAndUpdate(parentFolderId, {
+        const updatedParent = await driveModel.findOneAndUpdate(query, {
             $pull: {
                 nestedFolders: {
-                    "folderId": new mongoose.Types.ObjectId(folderId)
+                    "folderId": folderId
                 }
             }
         })
         if (!updatedParent) {
             return res.status(400).json({ error: true, message: 'couldn\'t delete folder', data: {} });
         }
-        const deletedFolder = await driveModel.findByIdAndDelete(folderId)
+        const deletedFolder = await driveModel.findOneAndDelete(folderId)
         if (!deletedFolder) {
             return res.status(400).json({ error: true, message: 'couldn\'t delete Folder', data: {} });
         }
@@ -139,38 +211,46 @@ exports.deleteFolder = expressAsyncHandler(
 exports.renameFolder = expressAsyncHandler(
     async (req, res, next) => {
         const { folderId } = req.params;
-        const {folderName} =req.body;
+        const isParentFolder = req.query.isParentFolder === 'true';
+        const { folderName } = req.body;
         if (!areMongoIdsValid([folderId])) {
             return res.status(400).json({ error: true, message: 'object Id is not valid', data: {} });
         }
-        if(!folderName){
-            return res.status(400).json({message:'folder name is missing'});
+        if (!folderName) {
+            return res.status(400).json({ message: 'folder name is missing' });
         }
-        const folder = await driveModel.findById(folderId,{parentFolderId:1})
-        const parentFolderId = folder.parentFolderId
-        const removedFromParent = await driveModel.findByIdAndUpdate(parentFolderId, {
+        const folder = await driveModel.findById(folderId, { parentFolderId: 1 })
+        const parentFolderId = folder.parentFolderId;
+        let query;
+        if (isParentFolder) {
+            { userId: folderId }
+        }
+        else {
+            { _id: folderId }
+        }
+        const removedFromParent = await driveModel.findOneAndUpdate(query, {
 
-            $pull:{
-                nestedFolders:{
-                    folderId:new mongoose.Types.ObjectId(folderId)
+            $pull: {
+                nestedFolders: {
+                    folderId: new mongoose.Types.ObjectId(folderId)
                 }
             },
-            
+
         })
-        const pushedToParent = await driveModel.findByIdAndUpdate(parentFolderId,{
-            $push:{
-                nestedFolders:{
-                 folderId:new mongoose.Types.ObjectId(folderId),
-                 folderName:folderName
+        const pushedToParent = await driveModel.findOneAndUpdate(query, {
+            $push: {
+                nestedFolders: {
+                    folderId: new mongoose.Types.ObjectId(folderId),
+                    folderName: folderName
                 }
-         }
+            }
         })
         if (!(removedFromParent && pushedToParent)) {
             return res.status(400).json({ error: true, message: 'couldn\'t rename folder', data: {} });
         }
-        const deletedFolder = await driveModel.findByIdAndUpdate(folderId,{
-            $set:{
-                folderName:folderName
+        const deletedFolder = await driveModel.findByIdAndUpdate(folderId, {
+            $set: {
+                folderName: folderName
             }
         })
         if (!deletedFolder) {

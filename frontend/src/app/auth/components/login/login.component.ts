@@ -36,7 +36,7 @@ export class LoginComponent  {
         this.isUserLoggedIn$.next(true);
         localStorage.setItem('userId',res.user._id)
         this.authService.getEmailSubject().next(res.user.email)
-        this.router.navigate(['/drive'], { queryParams: { isParentFolder: 'true' } })
+        this.router.navigate(['/drive'], { queryParams: { isParentFolder: 'true',folderId: res.user._id } })
       },
       error:(err)=>{
         this.sharedService.error(err.error.message)

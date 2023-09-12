@@ -16,6 +16,8 @@ router.route('/register')
 
 router.route('/user/:userId')
     .get(authController.userInfo)
+router.route('/users/')
+    .get(authController.usersList)
 
 
 module.exports = router;

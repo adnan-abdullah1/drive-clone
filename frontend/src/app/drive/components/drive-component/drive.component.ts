@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DriveService } from '../../service/drive.service';
 import { imgaeBase64 } from './image-base-64';
 import { SharedService } from 'src/app/shared-service/shared-service.service';
@@ -18,16 +18,23 @@ export class DriveComponent implements OnInit {
   userId: string = localStorage.getItem('userId')!;
   folderData: any = {};
   fileExtensions: Array<string> = [];
-  menu: any[] = [];
+  folderId:string='';
   constructor(private ac: ActivatedRoute,
     private driveService: DriveService,
     private sharedService : SharedService,
-    private dialog : MatDialog) {
-
+    private dialog : MatDialog,
+    private router: Router) {
 
     this.ac.queryParamMap.subscribe({
       next: (params) => {
-        this.isParentFolder = !!params.get('isParentFolder');
+        if(params.get('isParentFolder') == 'false'){
+          this.isParentFolder=false;
+        }
+        else{
+          this.isParentFolder=true;
+        }
+        this.folderId = params.get('folderId')!;
+        this.loadDriveData(this.folderId)
       }
     })
   }
@@ -36,23 +43,26 @@ export class DriveComponent implements OnInit {
     this.driveService.driveDialogAdded.subscribe({
       next: (value) => {
         if (value) {
-          this.loadDriveData();
+          this.loadDriveData(this.folderId);
         }
       }
     })
-    this.loadDriveData();
+    // this.loadDriveData();
 
   }
-  loadDriveData() {
-    this.driveService.getFolder(this.userId, this.isParentFolder).subscribe(
+  loadDriveData(folderId:string | undefined = undefined,nestedFolder:string|undefined=undefined) {
+    if(nestedFolder){
+      this.router.navigate(['/drive'], { queryParams: { isParentFolder: 'false',folderId: folderId} })
+    }
+    this.driveService.getFolder(this.userId, this.isParentFolder,folderId).subscribe(
       {
         next: (res: any) => {
           this.folderData = res.folder;
-          this.makeFileExtensionArray();
+          if(!res.files?.length)
+            this.makeFileExtensionArray();
           if (this.isParentFolder) {
             localStorage.setItem('folderId', res.folder._id)
           }
-
         }
       }
     )
@@ -61,14 +71,17 @@ export class DriveComponent implements OnInit {
   openOnMouseOver() {
     this.trigger.openMenu();
   }
+
   makeFileExtensionArray() {
-    this.folderData.files.forEach((element: { fileId: string, _id: string, fileName: string }) => {
+    //takes filenames and extract extension from them, and push them to array
+    //used to show file icon
+    this.folderData?.files?.forEach((element: { fileId: string, _id: string, fileName: string }) => {
       const fileExtension = element.fileName.split('').reverse().join('').split('.')[0].split('').reverse().join('');
       this.fileExtensions.push(fileExtension)
     });
   }
   deleteFolder(folderId: string) {
-    this.driveService.deleteFolder(folderId).subscribe({
+    this.driveService.deleteFolder(folderId,this.isParentFolder).subscribe({
       next:(res:any)=>{
         if(res.error){
           this.sharedService.error(res.message);
@@ -78,13 +91,13 @@ export class DriveComponent implements OnInit {
         this.loadDriveData();
       },
       error:(err:any)=>{
-        this.sharedService.error(err.message || err.error.message)
+        this.sharedService.error(err.error.message || err.message )
       }
     })
   }
-  openRenameFolderDialog(folderId:string){
+  openDialog(folderId:string,usage:string){
     const dialogRef = this.dialog.open(DialogComponent, {
-      data: {usage: 'renameFolder', folderId:folderId},
+      data: {usage: usage, folderId:folderId},
       height: '240px',
       width: '300px',
     });
@@ -92,6 +105,20 @@ export class DriveComponent implements OnInit {
       this.driveService.dialogData();
     });
   }
+  openFileRenameDialog(fileId:string,usage:string){
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {usage: usage, fileId:fileId, isParentFolder:this.isParentFolder,
+      folderId:this.folderId},
+      height: '240px',
+      width: '300px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.driveService.dialogData();
+    });
+  }
+
+
+
   getImage(index: number) {
     const fileExtensionType = this.fileExtensions[index];
     switch (fileExtensionType) {
@@ -101,12 +128,21 @@ export class DriveComponent implements OnInit {
         return imgaeBase64.json
       case 'png':
         return imgaeBase64.image
+      case 'mp4':
+        return imgaeBase64.image;
       case 'rar':
-        return imgaeBase64.zip
+        return imgaeBase64.zip;
       case 'zip':
-        return imgaeBase64.zip
+        return imgaeBase64.zip;
+      case 'csv':
+        return imgaeBase64.csv;
+      case "docx":
+        console.log('docs called')
+        return imgaeBase64.docx;
+      case 'js':
+        return imgaeBase64.js;
       default:
-        return '..'
+        return imgaeBase64.default;
     }
   }
 }
